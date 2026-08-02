@@ -3,10 +3,10 @@
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
-const databaseUrl = process.env.DATABASE_URL;
+const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } = process.env;
 
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not defined");
+if (!DB_HOST || !DB_PORT || !DB_NAME || !DB_USER || !DB_PASSWORD) {
+  throw new Error("Missing required database environment variables");
 }
 
 export default defineConfig({
@@ -14,6 +14,10 @@ export default defineConfig({
   schema: "./src/db/schema/index.ts",
   out: "./drizzle",
   dbCredentials: {
-    url: databaseUrl,
+    host: DB_HOST,
+    port: Number(DB_PORT),
+    database: DB_NAME,
+    user: DB_USER,
+    password: DB_PASSWORD,
   },
 });
