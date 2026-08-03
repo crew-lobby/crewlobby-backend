@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 
-import { createUserSchema } from "./user.schemas";
-import { UserService } from "./user.service";
+import { createUserSchema } from "./user.schemas.js";
+import { UserService } from "./user.service.js";
 
 const userService = new UserService();
 
