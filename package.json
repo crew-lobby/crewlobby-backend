@@ -3,20 +3,22 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
- "scripts": {
-  "dev": "nodemon --legacy-watch --watch src --ext ts --exec tsx src/server.ts",
-  "build": "tsc",
-  "start": "node dist/server.js",
-  "test": "echo \"Tests not configured yet\"",
-  "db:generate": "drizzle-kit generate",
-  "db:migrate": "drizzle-kit migrate",
-  "db:studio": "drizzle-kit studio"
-},
+  "scripts": {
+    "dev": "nodemon --legacy-watch --watch src --ext ts --exec tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "echo \"Tests not configured yet\"",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.25",
+    "better-auth": "^1.6.25",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
