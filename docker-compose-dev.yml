@@ -13,8 +13,8 @@ services:
     ports:
       - "${PORT}:3333"
     volumes:
-      - ./src:/app/src
-      - ./drizzle:/app/drizzle
+      - .:/app
+      - /app/node_modules
     depends_on:
       db:
         condition: service_healthy
