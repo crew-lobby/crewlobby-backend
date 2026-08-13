@@ -1,11 +1,7 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { users } from "./users.js";
+import { organization } from "./organization.js";
 
 export const session = pgTable("session", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -25,6 +21,11 @@ export const session = pgTable("session", {
   ipAddress: text("ip_address"),
 
   userAgent: text("user_agent"),
+
+  activeOrganizationId: uuid("active_organization_id").references(
+    () => organization.id,
+    { onDelete: "set null" }
+  ),
 
   createdAt: timestamp("created_at", {
     withTimezone: true,

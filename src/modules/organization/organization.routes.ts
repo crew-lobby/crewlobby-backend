@@ -1,8 +1,13 @@
 import { Router } from "express";
 
-import { accessMiddleware } from "../../middleware/access.middleware.js";
-import { listOrganizationsController } from "./organization.controller.js";
+import {
+  updateMemberRole,
+  getMyRole,
+  getMyPermissions,
+} from "./organization.controller.js";
 
 export const organizationRouter = Router();
 
-organizationRouter.get("/", accessMiddleware, listOrganizationsController);
+organizationRouter.patch("/members/role", updateMemberRole);
+organizationRouter.get("/members/me/role", getMyRole);
+organizationRouter.get("/members/me/permissions", getMyPermissions);
