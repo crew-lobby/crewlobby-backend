@@ -1,13 +1,13 @@
 import { Router } from "express";
 
 import {
-  updateMemberRole,
-  getMyRole,
-  getMyPermissions,
+  getMyPermissionsController,
+  getMyRoleController,
+  updateMemberRoleController,
 } from "./organization.controller.js";
 
 export const organizationRouter = Router();
 
-organizationRouter.patch("/members/role", updateMemberRole);
-organizationRouter.get("/members/me/role", getMyRole);
-organizationRouter.get("/members/me/permissions", getMyPermissions);
+organizationRouter.patch("/members/role", updateMemberRoleController);
+organizationRouter.get("/members/me/role", getMyRoleController);
+organizationRouter.get("/members/me/permissions", getMyPermissionsController);

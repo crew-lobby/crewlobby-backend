@@ -1,73 +1,52 @@
-import type { Request, Response, NextFunction } from "express";
-import { fromNodeHeaders } from "better-auth/node";
+import type { RequestHandler } from "express";
 
-import { auth } from "../../lib/auth.js";
-import { user, manager, admin, owner } from "../../lib/permissions.js";
+import { updateMemberRoleSchema } from "./organization.schemas.js";
+import { OrganizationService } from "./organization.service.js";
 
-const roles = { user, manager, admin, owner };
+const organizationService = new OrganizationService();
 
-export async function updateMemberRole(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export const updateMemberRoleController: RequestHandler = async (
+  request,
+  response,
+  next,
+) => {
   try {
-    const { memberId, role, organizationId } = request.body;
-
-    const result = await auth.api.updateMemberRole({
-      body: { memberId, role, organizationId },
-      headers: fromNodeHeaders(request.headers),
-    });
+    const payload = updateMemberRoleSchema.parse(request.body);
+    const result = await organizationService.updateMemberRole(
+      payload,
+      request.headers,
+    );
 
     return response.json(result);
   } catch (error) {
-    next(error);
+    return next(error);
   }
-}
+};
 
-export async function getMyRole(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export const getMyRoleController: RequestHandler = async (
+  request,
+  response,
+  next,
+) => {
   try {
-    const { role } = await auth.api.getActiveMemberRole({
-      headers: fromNodeHeaders(request.headers),
-    });
+    const result = await organizationService.getMyRole(request.headers);
 
-    return response.json({ role });
+    return response.json(result);
   } catch (error) {
-    next(error);
+    return next(error);
   }
-}
+};
 
-export async function getMyPermissions(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export const getMyPermissionsController: RequestHandler = async (
+  request,
+  response,
+  next,
+) => {
   try {
-    const { role } = await auth.api.getActiveMemberRole({
-      headers: fromNodeHeaders(request.headers),
-    });
+    const result = await organizationService.getMyPermissions(request.headers);
 
-    const permissions: Record<string, string[]> = {};
-
-    for (const roleName of role.split(",")) {
-      const definition = roles[roleName as keyof typeof roles];
-      if (!definition) continue;
-
-      for (const [resource, actions] of Object.entries(
-        definition.statements
-      )) {
-        permissions[resource] = Array.from(
-          new Set([...(permissions[resource] ?? []), ...(actions as string[])])
-        );
-      }
-    }
-
-    return response.json({ role, permissions });
+    return response.json(result);
   } catch (error) {
-    next(error);
+    return next(error);
   }
-}
+};
