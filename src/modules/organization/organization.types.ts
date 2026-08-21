@@ -16,3 +16,14 @@ export type MemberPermissions = {
   role: string;
   permissions: Record<string, string[]>;
 };
+
+export type ListMembersInput = {
+  organizationId?: string;
+  limit?: number;
+  offset?: number;
+};
+
+export type RemoveMemberInput = {
+  memberIdOrEmail: string;
+  organizationId: string;
+};

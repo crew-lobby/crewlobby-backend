@@ -4,8 +4,10 @@ import type { IncomingHttpHeaders } from "node:http";
 import { auth } from "../../lib/auth.js";
 import { user, manager, admin, owner } from "../../lib/permissions.js";
 import type {
+  ListMembersInput,
   MemberPermissions,
   MemberRole,
+  RemoveMemberInput,
   UpdateMemberRoleInput,
 } from "./organization.types.js";
 
@@ -17,6 +19,20 @@ export class OrganizationService {
     headers: IncomingHttpHeaders,
   ) {
     return auth.api.updateMemberRole({
+      body: input,
+      headers: fromNodeHeaders(headers),
+    });
+  }
+
+  async listMembers(input: ListMembersInput, headers: IncomingHttpHeaders) {
+    return auth.api.listMembers({
+      query: input,
+      headers: fromNodeHeaders(headers),
+    });
+  }
+
+  async removeMember(input: RemoveMemberInput, headers: IncomingHttpHeaders) {
+    return auth.api.removeMember({
       body: input,
       headers: fromNodeHeaders(headers),
     });
