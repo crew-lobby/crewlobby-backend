@@ -5,13 +5,11 @@ import { organization } from "better-auth/plugins";
 import { db } from "../db/index.js";
 import * as schema from "../db/schema/index.js";
 import { ac, user, manager, admin, owner } from "./permissions.js";
-
-const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3333";
-const trustedOrigin = process.env.FRONTEND_URL ?? "http://localhost:3000";
+import { env } from "../config/env.js";
 
 export const auth = betterAuth({
-  baseURL,
-  trustedOrigins: [trustedOrigin],
+  baseURL: env.BETTER_AUTH_URL,
+  trustedOrigins: [env.FRONTEND_URL],
 
   database: drizzleAdapter(db, {
     provider: "pg",
