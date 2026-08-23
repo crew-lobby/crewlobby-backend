@@ -17,7 +17,10 @@ export const createProjectController: RequestHandler = async (
 ) => {
   try {
     const payload = createProjectSchema.parse(request.body);
-    const project = await projectsService.create(payload);
+    const project = await projectsService.create(
+      payload,
+      response.locals.auth.organizationId,
+    );
 
     return response.status(201).json(project);
   } catch (error) {
@@ -32,7 +35,10 @@ export const listProjectsController: RequestHandler = async (
 ) => {
   try {
     const query = listProjectsQuerySchema.parse(request.query);
-    const result = await projectsService.list(query);
+    const result = await projectsService.list(
+      query,
+      response.locals.auth.organizationId,
+    );
 
     return response.json(result);
   } catch (error) {
@@ -48,7 +54,11 @@ export const updateProjectController: RequestHandler = async (
   try {
     const { id } = projectIdParamSchema.parse(request.params);
     const payload = updateProjectSchema.parse(request.body);
-    const project = await projectsService.update(id, payload);
+    const project = await projectsService.update(
+      id,
+      payload,
+      response.locals.auth.organizationId,
+    );
 
     return response.json(project);
   } catch (error) {
@@ -63,7 +73,7 @@ export const deleteProjectController: RequestHandler = async (
 ) => {
   try {
     const { id } = projectIdParamSchema.parse(request.params);
-    await projectsService.delete(id);
+    await projectsService.delete(id, response.locals.auth.organizationId);
 
     return response.status(204).send();
   } catch (error) {

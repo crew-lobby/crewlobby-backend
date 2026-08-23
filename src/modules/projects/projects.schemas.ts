@@ -16,7 +16,6 @@ export const projectPriorityValues = [
 ] as const;
 
 export const createProjectSchema = z.object({
-  companyId: z.string().uuid(),
   projectManagerId: z.string().uuid().optional(),
   name: z.string().min(1, "Name is required").max(150),
   code: z.string().min(1, "Code is required").max(30),
@@ -32,11 +31,11 @@ export const createProjectSchema = z.object({
     .transform((value) => (value === undefined ? undefined : value.toFixed(2))),
   currencyCode: z.string().length(3).optional(),
   progressPercent: z.number().int().min(0).max(100).optional(),
-});
+}).strict();
 
 export type CreateProjectSchema = z.infer<typeof createProjectSchema>;
 
-export const updateProjectSchema = createProjectSchema.partial();
+export const updateProjectSchema = createProjectSchema.partial().strict();
 
 export type UpdateProjectSchema = z.infer<typeof updateProjectSchema>;
 
@@ -48,8 +47,7 @@ export const listProjectsQuerySchema = z.object({
   search: z.string().min(1).optional(),
   dueDateFrom: z.string().date().optional(),
   dueDateTo: z.string().date().optional(),
-  companyId: z.string().uuid().optional(),
-});
+}).strict();
 
 export type ListProjectsQuerySchema = z.infer<typeof listProjectsQuerySchema>;
 

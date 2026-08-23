@@ -28,7 +28,6 @@ export type Project = {
 };
 
 export type CreateProjectInput = {
-  companyId: string;
   projectManagerId?: string;
   name: string;
   code: string;
@@ -42,9 +41,11 @@ export type CreateProjectInput = {
   progressPercent?: number;
 };
 
+export type CreateProjectRecord = CreateProjectInput & { companyId: string };
+
 export type UpdateProjectInput = Partial<CreateProjectInput>;
 
-export type ListProjectsFilters = {
+export type ListProjectsQuery = {
   page: number;
   perPage: number;
   status?: ProjectStatus;
@@ -52,7 +53,11 @@ export type ListProjectsFilters = {
   search?: string;
   dueDateFrom?: string;
   dueDateTo?: string;
-  companyId?: string;
+};
+
+export type ListProjectsFilters = ListProjectsQuery & {
+  /** Set only by the service from the active Better Auth organization. */
+  companyId: string;
 };
 
 export type PaginatedResult<T> = {
