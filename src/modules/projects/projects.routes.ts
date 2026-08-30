@@ -8,22 +8,30 @@ import {
 } from "./projects.controller.js";
 import {
   requireActiveOrganization,
-  requireProjectPermission,
+  requirePermission,
 } from "../../middleware/access.middleware.js";
 
 export const projectsRouter = Router();
 
 projectsRouter.use(requireActiveOrganization);
 
-projectsRouter.get("/", requireProjectPermission("list"), listProjectsController);
-projectsRouter.post("/", requireProjectPermission("create"), createProjectController);
+projectsRouter.get(
+  "/",
+  requirePermission("project", "list"),
+  listProjectsController,
+);
+projectsRouter.post(
+  "/",
+  requirePermission("project", "create"),
+  createProjectController,
+);
 projectsRouter.patch(
   "/:id",
-  requireProjectPermission("update"),
+  requirePermission("project", "update"),
   updateProjectController,
 );
 projectsRouter.delete(
   "/:id",
-  requireProjectPermission("delete"),
+  requirePermission("project", "delete"),
   deleteProjectController,
 );

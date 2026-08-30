@@ -2,8 +2,10 @@ import type { RequestHandler } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 
 import { auth } from "../lib/auth.js";
+import type { statement } from "../lib/permissions.js";
 
-export type ProjectAction = "list" | "create" | "update" | "delete";
+type Resource = keyof typeof statement;
+type Action<R extends Resource> = (typeof statement)[R][number];
 
 /**
  * Loads the Better Auth cookie session and establishes the request tenant.
@@ -43,9 +45,14 @@ export const requireActiveOrganization: RequestHandler = async (
   }
 };
 
-/** Uses Better Auth Organization's official permission endpoint. */
-export const requireProjectPermission = (
-  action: ProjectAction,
+/**
+ * Verifies the authenticated user has the given resource/action permission
+ * inside the request's active organization. Always defers to Better Auth's
+ * own access control — never trusts a role or permission sent by the client.
+ */
+export const requirePermission = <R extends Resource>(
+  resource: R,
+  action: Action<R>,
 ): RequestHandler => {
   return async (request, response, next) => {
     try {
@@ -55,13 +62,17 @@ export const requireProjectPermission = (
         return response.status(401).json({ message: "Unauthorized" });
       }
 
+      const permissions: Record<string, string[]> = {
+        [resource]: [action],
+      };
+
       const result = await auth.api.hasPermission({
         headers: fromNodeHeaders(request.headers),
         body: {
           organizationId: authContext.organizationId,
-          permissions: { project: [action] },
+          permissions,
         },
-      });
+      } as Parameters<typeof auth.api.hasPermission>[0]);
 
       if (!result.success) {
         return response.status(403).json({ message: "Forbidden" });
@@ -73,4 +84,3 @@ export const requireProjectPermission = (
     }
   };
 };
-

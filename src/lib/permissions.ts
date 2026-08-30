@@ -4,9 +4,10 @@ import {
   adminAc,
 } from "better-auth/plugins/organization/access";
 
-const statement = {
+export const statement = {
   ...defaultStatements,
   project: ["list", "create", "update", "delete"],
+  member: ["read", "create", "update", "delete"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -20,13 +21,14 @@ export const manager = ac.newRole({
 });
 
 export const admin = ac.newRole({
-  project: ["list", "create", "update", "delete"],
   ...adminAc.statements,
+  project: ["list", "create", "update", "delete"],
+  member: ["read", "create", "update", "delete"],
 });
 
 export const owner = ac.newRole({
   project: ["list", "create", "update", "delete"],
   organization: ["update", "delete"],
-  member: ["create", "update", "delete"],
+  member: ["read", "create", "update", "delete"],
   invitation: ["create", "cancel"],
 });
