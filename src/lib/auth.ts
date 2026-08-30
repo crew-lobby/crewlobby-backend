@@ -34,6 +34,20 @@ export const auth = betterAuth({
       ac,
       roles: { user, manager, admin, owner },
       creatorRole: "owner",
+      schema: {
+        organization: {
+          additionalFields: {
+            addressLine1: { type: "string", required: true },
+            addressLine2: { type: "string", required: false },
+            city: { type: "string", required: true },
+            state: { type: "string", required: true },
+            country: { type: "string", required: true },
+            zip: { type: "string", required: true },
+            employeeCount: { type: "number", required: true },
+            sector: { type: "string", required: true },
+          },
+        },
+      },
       async sendInvitationEmail(data) {
         console.log(
           `Invite for ${data.email} -> org ${data.organization.name}: /accept-invitation/${data.id}`

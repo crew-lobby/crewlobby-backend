@@ -1,4 +1,10 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 import { users } from "./users.js";
 
@@ -12,6 +18,22 @@ export const organization = pgTable("organization", {
   logo: text("logo"),
 
   metadata: text("metadata"),
+
+  addressLine1: text("address_line_1"),
+
+  addressLine2: text("address_line_2"),
+
+  city: text("city"),
+
+  state: text("state"),
+
+  country: text("country"),
+
+  zip: text("zip"),
+
+  employeeCount: integer("employee_count"),
+
+  sector: text("sector"),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
