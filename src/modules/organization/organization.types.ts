@@ -18,7 +18,7 @@ export type MemberPermissions = {
 };
 
 export type ListMembersInput = {
-  organizationId?: string;
+  organizationId: string;
   limit?: number;
   offset?: number;
 };

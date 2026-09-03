@@ -17,7 +17,7 @@ export const updateMemberRoleController: RequestHandler = async (
   try {
     const payload = updateMemberRoleSchema.parse(request.body);
     const result = await organizationService.updateMemberRole(
-      payload,
+      { ...payload, organizationId: response.locals.auth.organizationId },
       request.headers,
     );
 
@@ -35,7 +35,7 @@ export const listMembersController: RequestHandler = async (
   try {
     const query = listMembersQuerySchema.parse(request.query);
     const result = await organizationService.listMembers(
-      query,
+      { ...query, organizationId: response.locals.auth.organizationId },
       request.headers,
     );
 
@@ -53,10 +53,9 @@ export const removeMemberController: RequestHandler = async (
   try {
     const payload = removeMemberSchema.parse({
       memberIdOrEmail: request.params.memberIdOrEmail,
-      organizationId: request.query.organizationId,
     });
     const result = await organizationService.removeMember(
-      payload,
+      { ...payload, organizationId: response.locals.auth.organizationId },
       request.headers,
     );
 
