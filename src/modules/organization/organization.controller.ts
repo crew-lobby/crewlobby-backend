@@ -65,6 +65,23 @@ export const removeMemberController: RequestHandler = async (
   }
 };
 
+export const listInvitationsController: RequestHandler = async (
+  request,
+  response,
+  next,
+) => {
+  try {
+    const result = await organizationService.listInvitations(
+      { organizationId: response.locals.auth.organizationId },
+      request.headers,
+    );
+
+    return response.json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export const getMyRoleController: RequestHandler = async (
   request,
   response,

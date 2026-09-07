@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   getMyPermissionsController,
   getMyRoleController,
+  listInvitationsController,
   listMembersController,
   removeMemberController,
   updateMemberRoleController,
@@ -20,6 +21,11 @@ organizationRouter.get(
   "/members",
   requirePermission("member", "read"),
   listMembersController,
+);
+organizationRouter.get(
+  "/invitations",
+  requirePermission("member", "read"),
+  listInvitationsController,
 );
 organizationRouter.patch(
   "/members/role",

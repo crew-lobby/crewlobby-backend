@@ -27,3 +27,7 @@ export type RemoveMemberInput = {
   memberIdOrEmail: string;
   organizationId: string;
 };
+
+export type ListInvitationsInput = {
+  organizationId: string;
+};
