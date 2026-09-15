@@ -1,23 +1,16 @@
-/// <reference types="node" />
-
-import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
-const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } = process.env;
-
-if (!DB_HOST || !DB_PORT || !DB_NAME || !DB_USER || !DB_PASSWORD) {
-  throw new Error("Missing required database environment variables");
-}
+import { env } from "./src/config/env.js";
 
 export default defineConfig({
   dialect: "postgresql",
   schema: "./src/db/schema/index.ts",
   out: "./drizzle",
   dbCredentials: {
-    host: DB_HOST,
-    port: Number(DB_PORT),
-    database: DB_NAME,
-    user: DB_USER,
-    password: DB_PASSWORD,
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    database: env.DB_NAME,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
   },
 });

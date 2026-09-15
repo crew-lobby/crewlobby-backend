@@ -3,6 +3,7 @@ import { ProjectsRepository } from "./projects.repository.js";
 import type {
   CreateProjectInput,
   ListProjectsFilters,
+  ListProjectsQuery,
   PaginatedResult,
   Project,
   UpdateProjectInput,
@@ -11,20 +12,27 @@ import type {
 export class ProjectsService {
   constructor(private readonly projectsRepository = new ProjectsRepository()) {}
 
-  async create(data: CreateProjectInput): Promise<Project> {
-    return this.projectsRepository.create(data);
+  async create(data: CreateProjectInput, companyId: string): Promise<Project> {
+    return this.projectsRepository.create({ ...data, companyId });
   }
 
-  async list(filters: ListProjectsFilters): Promise<PaginatedResult<Project>> {
-    return this.projectsRepository.list(filters);
+  async list(
+    filters: ListProjectsQuery,
+    companyId: string,
+  ): Promise<PaginatedResult<Project>> {
+    return this.projectsRepository.list({ ...filters, companyId });
   }
 
-  async update(id: string, data: UpdateProjectInput): Promise<Project> {
+  async update(
+    id: string,
+    data: UpdateProjectInput,
+    companyId: string,
+  ): Promise<Project> {
     if (Object.keys(data).length === 0) {
       throw new AppError(400, "No fields to update");
     }
 
-    const project = await this.projectsRepository.update(id, data);
+    const project = await this.projectsRepository.update(id, companyId, data);
 
     if (!project) {
       throw new AppError(404, "Project not found");
@@ -33,8 +41,8 @@ export class ProjectsService {
     return project;
   }
 
-  async delete(id: string): Promise<void> {
-    const deleted = await this.projectsRepository.delete(id);
+  async delete(id: string, companyId: string): Promise<void> {
+    const deleted = await this.projectsRepository.delete(id, companyId);
 
     if (!deleted) {
       throw new AppError(404, "Project not found");

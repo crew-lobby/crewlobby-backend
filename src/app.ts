@@ -5,12 +5,13 @@ import { toNodeHandler } from "better-auth/node";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import { routes } from "./routes/index.js";
 import { auth } from "./lib/auth.js";
+import { env } from "./config/env.js";
 
 export const app = express();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+    origin: env.FRONTEND_URL,
     credentials: true,
   })
 );

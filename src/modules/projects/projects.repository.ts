@@ -3,7 +3,7 @@ import { and, count, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { projects } from "../../db/schema/projects.js";
 import type {
-  CreateProjectInput,
+  CreateProjectRecord,
   ListProjectsFilters,
   PaginatedResult,
   Project,
@@ -11,7 +11,7 @@ import type {
 } from "./projects.types.js";
 
 export class ProjectsRepository {
-  async create(data: CreateProjectInput): Promise<Project> {
+  async create(data: CreateProjectRecord): Promise<Project> {
     const [project] = await db.insert(projects).values(data).returning();
 
     return project;
@@ -43,7 +43,7 @@ export class ProjectsRepository {
 
     if (status) conditions.push(eq(projects.status, status));
     if (priority) conditions.push(eq(projects.priority, priority));
-    if (companyId) conditions.push(eq(projects.companyId, companyId));
+    conditions.push(eq(projects.companyId, companyId));
     if (dueDateFrom) conditions.push(gte(projects.dueDate, dueDateFrom));
     if (dueDateTo) conditions.push(lte(projects.dueDate, dueDateTo));
     if (search) {
@@ -80,20 +80,24 @@ export class ProjectsRepository {
     };
   }
 
-  async update(id: string, data: UpdateProjectInput): Promise<Project | null> {
+  async update(
+    id: string,
+    companyId: string,
+    data: UpdateProjectInput,
+  ): Promise<Project | null> {
     const [project] = await db
       .update(projects)
       .set({ ...data, updatedAt: new Date() })
-      .where(eq(projects.id, id))
+      .where(and(eq(projects.id, id), eq(projects.companyId, companyId)))
       .returning();
 
     return project ?? null;
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string, companyId: string): Promise<boolean> {
     const [deleted] = await db
       .delete(projects)
-      .where(eq(projects.id, id))
+      .where(and(eq(projects.id, id), eq(projects.companyId, companyId)))
       .returning({ id: projects.id });
 
     return Boolean(deleted);
