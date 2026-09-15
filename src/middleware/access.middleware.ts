@@ -1,4 +1,4 @@
-import type { RequestHandler } from "express";
+import type { Request, RequestHandler } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 
 import { auth } from "../lib/auth.js";
@@ -82,5 +82,32 @@ export const requirePermission = <R extends Resource>(
     } catch (error) {
       return next(error);
     }
+  };
+};
+
+/**
+ * Allows the request through when the authenticated user IS the resource
+ * owner (e.g. editing their own profile), falling back to a normal
+ * resource/action permission check for everyone else (e.g. an admin editing
+ * someone else's profile). Ownership is never inferred from the client body
+ * — always compared against the session's real user id.
+ */
+export const requireSelfOrPermission = <R extends Resource>(
+  getTargetUserId: (request: Request) => string,
+  resource: R,
+  action: Action<R>,
+): RequestHandler => {
+  return async (request, response, next) => {
+    const authContext = response.locals.auth;
+
+    if (!authContext) {
+      return response.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (getTargetUserId(request) === authContext.user.id) {
+      return next();
+    }
+
+    return requirePermission(resource, action)(request, response, next);
   };
 };

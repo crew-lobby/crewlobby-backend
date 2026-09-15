@@ -1,9 +1,11 @@
 import {
+  date,
   integer,
   pgTable,
   text,
   timestamp,
   uuid,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 import { users } from "./users.js";
@@ -40,6 +42,20 @@ export const organization = pgTable("organization", {
     .notNull(),
 });
 
+export const teams = pgTable("teams", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+
+  name: text("name").notNull(),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 export const member = pgTable("member", {
   id: uuid("id").defaultRandom().primaryKey(),
 
@@ -52,6 +68,21 @@ export const member = pgTable("member", {
     .references(() => users.id, { onDelete: "cascade" }),
 
   role: text("role").notNull().default("user"),
+
+  jobTitle: text("job_title"),
+
+  workEmail: text("work_email"),
+
+  startDate: date("start_date"),
+
+  teamId: uuid("team_id").references(() => teams.id, {
+    onDelete: "set null",
+  }),
+
+  managerId: uuid("manager_id").references(
+    (): AnyPgColumn => member.id,
+    { onDelete: "set null" },
+  ),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
