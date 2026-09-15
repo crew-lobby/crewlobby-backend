@@ -11,7 +11,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:24-alpine
+FROM node:24-alpine AS production-dependencies
 
 WORKDIR /app
 
@@ -21,6 +21,21 @@ COPY package*.json ./
 
 RUN npm ci --omit=dev
 
+
+FROM production-dependencies AS migrate
+
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/drizzle ./drizzle
+
+USER node
+
+CMD ["node", "dist/db/migrate.js"]
+
+
+FROM production-dependencies AS runtime
+
+COPY --from=build /app/dist ./dist
+
+USER node
 
 CMD ["npm", "start"]
