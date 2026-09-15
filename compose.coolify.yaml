@@ -10,7 +10,7 @@ x-backend-environment: &backend-environment
   NODE_ENV: production
   PORT: 3333
   FRONTEND_URL: ${FRONTEND_URL:?}
-  BETTER_AUTH_URL: ${SERVICE_URL_BACKEND_3333}
+  BETTER_AUTH_URL: ${SERVICE_URL_BACKEND:?}
   BETTER_AUTH_SECRET: ${SERVICE_PASSWORD_64_AUTH}
 
 services:
@@ -21,7 +21,6 @@ services:
       target: runtime
     environment:
       <<: *backend-environment
-      SERVICE_URL_BACKEND_3333: /
     expose:
       - "3333"
     depends_on:
