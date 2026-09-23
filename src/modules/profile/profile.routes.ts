@@ -4,6 +4,7 @@ import {
   getProfileController,
   updateProfileController,
 } from "./profile.controller.js";
+
 import {
   requireActiveOrganization,
   requirePermission,

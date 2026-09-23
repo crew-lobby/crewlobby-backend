@@ -23,6 +23,17 @@ export type MembershipEmployment = {
   startDate: string | null;
   teamId: string | null;
   managerId: string | null;
+
+  team: {
+    id: string;
+    name: string;
+  } | null;
+
+  manager: {
+    userId: string;
+    name: string;
+    image: string | null;
+  } | null;
 };
 
 export type ProfileView = {
@@ -30,24 +41,30 @@ export type ProfileView = {
   name: string;
   email: string;
   image: string | null;
-  profile: Omit<ProfileRecord, "id" | "userId" | "createdAt" | "updatedAt"> | null;
+
+  profile: Omit<
+    ProfileRecord,
+    "id" | "userId" | "createdAt" | "updatedAt"
+  > | null;
+
   employment: MembershipEmployment | null;
 };
 
 export type UpdateProfileInput = Partial<{
-  preferredName: string;
-  photoUrl: string;
-  location: string;
-  timezone: string;
-  about: string;
+  preferredName: string | null;
+  photoUrl: string | null;
+  location: string | null;
+  timezone: string | null;
+  about: string | null;
   skills: string[];
-  github: string;
-  linkedin: string;
-  personalWebsite: string;
+  github: string | null;
+  linkedin: string | null;
+  personalWebsite: string | null;
   otherLinks: ProfileLink[];
-  jobTitle: string;
-  workEmail: string;
-  startDate: string;
+
+  jobTitle: string | null;
+  workEmail: string | null;
+  startDate: string | null;
   teamId: string | null;
   managerId: string | null;
 }>;

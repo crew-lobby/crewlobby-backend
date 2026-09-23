@@ -1,4 +1,5 @@
 import type { RequestHandler } from "express";
+
 import { updateProfileSchema } from "./profile.schemas.js";
 import { ProfileService } from "./profile.service.js";
 
@@ -27,11 +28,21 @@ export const updateProfileController: RequestHandler = async (
   next,
 ) => {
   try {
-    const payload = updateProfileSchema.parse(request.body);
+    const payload = updateProfileSchema.parse(
+      request.body,
+    );
+
+    const targetUserId = String(request.params.userId);
+    const currentUserId = response.locals.auth.user.id;
+
     const result = await profileService.updateProfile(
       response.locals.auth.organizationId,
-      String(request.params.userId),
+      targetUserId,
       payload,
+      {
+        currentUserId,
+        isSelfEdit: currentUserId === targetUserId,
+      },
     );
 
     return response.json(result);
