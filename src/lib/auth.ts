@@ -5,6 +5,9 @@ import { organization } from "better-auth/plugins";
 import { db } from "../db/index.js";
 import * as schema from "../db/schema/index.js";
 import { ac, user, manager, admin, owner } from "./permissions.js";
+import { buildInvitationLink } from "./invitation-link.js";
+import { buildInvitationEmailHtml } from "./invitation-email.js";
+import { sendEmail } from "./email.js";
 import { env } from "../config/env.js";
 
 export const auth = betterAuth({
@@ -49,8 +52,24 @@ export const auth = betterAuth({
         },
       },
       async sendInvitationEmail(data) {
+        const invitationLink = buildInvitationLink(data.id);
+
+        try {
+          await sendEmail({
+            to: data.email,
+            subject: `You're invited to join ${data.organization.name} on CrewLobby`,
+            html: buildInvitationEmailHtml({
+              organizationName: data.organization.name,
+              inviterName: data.inviter.user.name,
+              invitationLink,
+            }),
+          });
+        } catch (error) {
+          console.error("Failed to send invitation email", error);
+        }
+
         console.log(
-          `Invite for ${data.email} -> org ${data.organization.name}: /accept-invitation/${data.id}`
+          `Invite for ${data.email} -> org ${data.organization.name}: ${invitationLink}`
         );
       },
     }),
